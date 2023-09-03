@@ -22,7 +22,7 @@ resource "cloudflare_tunnel_config" "auto_tunnel" {
   config {
     ingress_rule {
       hostname = cloudflare_record.jenkins.hostname
-      service  = "http://jenkins:8080"
+      service  = "http://jenkins-service.automation-srikanth-iyengar.svc.cluster.local:8080"
     }
     ingress_rule {
       service = "http_status:404"
@@ -35,15 +35,4 @@ resource "cloudflare_access_application" "jenkins" {
   name             = "Access application for jenkins.${var.cloudflare_zone}"
   domain           = "jenkins.${var.cloudflare_zone}"
   session_duration = "1h"
-}
-
-resource "cloudflare_access_policy" "http_policy" {
-  application_id = cloudflare_access_application.jenkins.id
-  zone_id        = var.cloudflare_zone_id
-  name           = "Example policy for jenkins.${var.cloudflare_zone}"
-  precedence     = "1"
-  decision       = "allow"
-  include {
-    email = [var.cloudflare_email]
-  }
 }
