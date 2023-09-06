@@ -1,9 +1,0 @@
-modules:
-  - name: jenkins
-    proxy:
-      - port: 8088
-        hostname: jenkins
-        type: tcp
-        subdomain: jenkins
-        domain: srikanthk.tech
-
