@@ -1,0 +1,21 @@
+version: '2'
+
+services:
+  openldap:
+    image: bitnami/openldap:2
+    ports:
+      - '1389:1389'
+      - '1636:1636'
+    environment:
+      - LDAP_ADMIN_USERNAME=admin
+      - LDAP_ADMIN_PASSWORD=adminpassword
+      - LDAP_USERS=user01,user02
+      - LDAP_PASSWORDS=password1,password2
+
+  ldap-ui:
+    image: dnknth/ldap-ui
+    ports:
+      - '5000:5000'
+    environment:
+      - LDAP_URL=ldap://openldap/
+      - BASE_DN=dc=example,dc=org

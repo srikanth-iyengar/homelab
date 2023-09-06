@@ -25,3 +25,29 @@ variable "cloudflare_token" {
   type        = string
   sensitive   = true
 }
+
+variable "supabase_db_host" {
+  description = "Host for the postgresdb"
+  type        = string
+  sensitive   = true
+}
+
+variable "supabase_db_password" {
+  description = "Password for supbase postgresdb"
+  type        = string
+  sensitive   = true
+}
+
+variable "supabase_db_username" {
+  description = "Postgres db username"
+  type        = string
+  sensitive   = true
+}
+
+variable "supabase_db_url" {
+  description = "Connection url for the postgres"
+  type        = string
+  sensitive   = true
+}
+
+

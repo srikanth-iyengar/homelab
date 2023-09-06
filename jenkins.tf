@@ -11,7 +11,7 @@ resource "kubernetes_deployment" "jenkins" {
     labels = {
       App = "jenkins-deployment"
     }
-    namespace = "automation-srikanth-iyengar"
+    namespace = "dev-tools-srikanth-iyengar"
   }
   spec {
     replicas = 1
@@ -27,22 +27,45 @@ resource "kubernetes_deployment" "jenkins" {
         }
       }
       spec {
+        init_container {
+          name              = "init-master"
+          image             = "busybox"
+          image_pull_policy = "Always"
+
+          command = ["sh", "-c", "chmod 777 /volumes/*"]
+
+          volume_mount {
+            mount_path = "/volumes/${random_string.volume_id.result}"
+            name       = random_string.volume_id.result
+          }
+        }
+
+        init_container {
+          name              = "init-volume-master"
+          image             = "jenkins/jenkins:lts"
+          image_pull_policy = "IfNotPresent"
+
+          command = ["sh", "-c", "echo initializing volume... && (cp -Rv /var/jenkins_home/. /init-volume-0 || true)"]
+
+          volume_mount {
+            mount_path = "/init-volume-0"
+            name       = random_string.volume_id.result
+            sub_path   = random_string.volume_id.result
+          }
+        }
         container {
           image = "jenkins/jenkins:lts"
           name  = "jenkins"
           resources {
             limits = {
               cpu    = "1"
-              memory = "1024Mi"
-            }
-            requests = {
-              cpu    = "250m"
-              memory = "50Mi"
+              memory = "1.5Gi"
             }
           }
           volume_mount {
             name       = random_string.volume_id.result
-            mount_path = "/var/jenkins_home/workspace"
+            mount_path = "/var/jenkins_home"
+            sub_path   = random_string.volume_id.result
           }
         }
         volume {
@@ -59,13 +82,12 @@ resource "kubernetes_deployment" "jenkins" {
 resource "kubernetes_service" "jenkins-service" {
   metadata {
     name      = "jenkins-service"
-    namespace = "automation-srikanth-iyengar"
+    namespace = "dev-tools-srikanth-iyengar"
   }
   spec {
     selector = {
       App = "jenkins-deployment"
     }
-    type = "LoadBalancer"
     port {
       name        = "jenkins-service"
       target_port = 8080
@@ -78,16 +100,16 @@ resource "kubernetes_service" "jenkins-service" {
 resource "kubernetes_persistent_volume_claim" "jenkins-pvc" {
   metadata {
     name      = random_string.volume_id.result
-    namespace = "automation-srikanth-iyengar"
+    namespace = "dev-tools-srikanth-iyengar"
   }
 
   spec {
-    storage_class_name = "csi-okteto"
     access_modes       = ["ReadWriteOnce"]
+    storage_class_name = "okteto-standard"
 
     resources {
       requests = {
-        storage = "3.5Gi"
+        storage = "1.0Gi"
       }
     }
   }
