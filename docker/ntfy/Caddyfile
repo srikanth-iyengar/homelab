@@ -1,0 +1,28 @@
+{
+	http_port 80
+	https_port 443
+	debug
+
+	order authenticate before respond
+	order authorize before basicauth
+
+	security {
+		oauth identity provider keycloak {
+			driver generic
+			realm ntfy
+			client_id test
+			client_secret hw3yQfY4RZZttOWqiEVbEy1aO8M1pZq9
+			scopes openid email profile
+			metadata_url https://keycloak.srikanthk.tech/realms/ntfy/.well-known/openid-configuration
+		}
+
+		authentication portal ntfy {
+			crypto default token lifetime 3600
+			enable identity provider keycloak
+		}
+	}
+}
+
+srikanthk.net {
+	authenticate with ntfy
+}
