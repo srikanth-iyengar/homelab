@@ -33,8 +33,8 @@ resource "kubernetes_deployment" "ntfy-deployment" {
       }
       spec {
         container {
-          image = "binwiederhier/ntfy:latest"
-          name  = "ntfy"
+          image   = "binwiederhier/ntfy:latest"
+          name    = "ntfy"
           command = ["ntfy", "serve"]
           resources {
             limits = {
