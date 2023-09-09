@@ -1,15 +1,4 @@
-FROM binwiederhier/ntfy as ntfy-base
-FROM openresty/openresty:alpine-fat
- 
-RUN mkdir /var/log/nginx
- 
-RUN apk add --no-cache openssl-dev
-RUN apk add --no-cache git
-RUN apk add --no-cache gcc
-RUN apk add --no-cache supervisor
-RUN luarocks install lua-resty-openidc
-
-COPY --from=ntfy-base /usr/bin/ntfy /usr/bin/ntfy
- 
-EXPOSE 80
-ENTRYPOINT ["/usr/bin/supervisord", "-c", "/etc/supervisord.conf"]
+FROM httpd
+RUN apt update && apt install libapache2-mod-auth-openidc curl -y
+RUN cp /usr/lib/apache2/modules/mod_auth_openidc.so /usr/local/apache2/modules/mod_auth_openidc.so
+ENTRYPOINT ["httpd-foreground"]

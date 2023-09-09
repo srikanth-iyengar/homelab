@@ -1,9 +1,16 @@
 version: "3"
 
 services:
-  openresty:
-    image: deadcoder11u2/ntfy:latest
+  httpd:
+    image: deadcoder11u2/apache2-openidc
+    ports:
+      - 8080:80
     volumes:
-      - ./server.yml:/etc/ntfy/server.yml
-      - ./supervisord.conf:/etc/supervisord.conf
-      - ./nginx.conf:/etc/nginx/conf.d/default.conf
+      - ./httpd.conf:/usr/local/apache2/conf/httpd.conf
+  keycloak:
+    image: quay.io/keycloak/keycloak:22.0.1
+    container_name: keycloak
+    command: ["start-dev"]
+    environment:
+      - KEYCLOAK_ADMIN=ADMIN
+      - KEYCLOAK_ADMIN_PASSWORD=admin

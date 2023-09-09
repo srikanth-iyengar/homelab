@@ -50,4 +50,13 @@ variable "supabase_db_url" {
   sensitive   = true
 }
 
-
+variable "keycloak_client_id" {
+  description = "Keycloak Client Id"
+  type        = string
+  sensitive   = true
+}
+variable "keycloak_client_secret" {
+  description = "Keycloak Client Secret"
+  type        = string
+  sensitive   = true
+}

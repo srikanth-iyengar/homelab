@@ -1,8 +1,13 @@
 resource "random_string" "ntfy_volume_id" {
-  length  = 10
+  length  = 25
   special = false
   upper   = false
   numeric = false
+}
+
+resource "random_string" "oidc_passphrase" {
+  length  = 30
+  special = false
 }
 
 resource "kubernetes_deployment" "ntfy-deployment" {
@@ -28,8 +33,8 @@ resource "kubernetes_deployment" "ntfy-deployment" {
       }
       spec {
         container {
-          image   = "binwiederhier/ntfy:latest"
-          name    = "ntfy"
+          image = "binwiederhier/ntfy:latest"
+          name  = "ntfy"
           command = ["ntfy", "serve"]
           resources {
             limits = {
@@ -88,7 +93,7 @@ resource "kubernetes_persistent_volume_claim" "ntfy-pvc" {
 
     resources {
       requests = {
-        storage = "0.5Gi"
+        storage = "512Mi"
       }
     }
   }
