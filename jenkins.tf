@@ -59,7 +59,7 @@ resource "kubernetes_deployment" "jenkins" {
           resources {
             limits = {
               cpu    = "1"
-              memory = "1.5Gi"
+              memory = "3.0Gi"
             }
           }
           volume_mount {
