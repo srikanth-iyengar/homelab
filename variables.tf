@@ -55,6 +55,7 @@ variable "keycloak_client_id" {
   type        = string
   sensitive   = true
 }
+
 variable "keycloak_client_secret" {
   description = "Keycloak Client Secret"
   type        = string

@@ -13,6 +13,7 @@ resource "cloudflare_record" "ntfy" {
   name    = "ntfy"
   value   = cloudflare_tunnel.auto_tunnel.cname
   type    = "CNAME"
+  proxied = true
 }
 
 resource "cloudflare_record" "jenkins" {
@@ -20,6 +21,7 @@ resource "cloudflare_record" "jenkins" {
   name    = "jenkins"
   value   = cloudflare_tunnel.auto_tunnel.cname
   type    = "CNAME"
+  proxied = true
 }
 
 resource "cloudflare_record" "keycloak" {
@@ -27,11 +29,20 @@ resource "cloudflare_record" "keycloak" {
   name    = "keycloak"
   value   = cloudflare_tunnel.auto_tunnel.cname
   type    = "CNAME"
+  proxied = true
 }
 
 resource "cloudflare_record" "grafana" {
   zone_id = var.cloudflare_zone_id
   name    = "grafana"
+  value   = cloudflare_tunnel.auto_tunnel.cname
+  type    = "CNAME"
+  proxied = true
+}
+
+resource "cloudflare_record" "bookstack" {
+  zone_id = var.cloudflare_zone_id
+  name    = "bookstack"
   value   = cloudflare_tunnel.auto_tunnel.cname
   type    = "CNAME"
   proxied = true
@@ -56,6 +67,10 @@ resource "cloudflare_tunnel_config" "auto_tunnel" {
     ingress_rule {
       hostname = cloudflare_record.grafana.hostname
       service  = "http://grafana-service.essentials-srikanth-iyengar.svc.cluster.local:3000"
+    }
+    ingress_rule {
+      hostname = cloudflare_record.bookstack.hostname
+      service  = "http://bookstack-service.productivity-stack-srikanth-iyengar.svc.cluster.local:8080"
     }
     ingress_rule {
       service = "http_status:404"
