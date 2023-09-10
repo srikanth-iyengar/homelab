@@ -11,9 +11,14 @@ This setup deploys:
 - [Keycloak](https://keycloak.srikanthk.tech) 🔐
 
 And soon to come:
-- [Kibana](https://kibana.srikanthk.tech) 🐘
+- [Kibana](https://kibana.srikanthk.tech) 📈
 - [Elasticsearch](https://elasticsearch.srikanthk.tech) 📊
 - [PgAdmin](https://pgadmin.srikanthk.tech) 🐘
+- [BookStack](https://bookstack.srikanthk.tech) 📚: A lightweight, self-hosted documentation platform for organizing and sharing information.
+- [Firefly III](https://firefly.srikanthk.tech) 💰: A personal finance manager for tracking expenses, budgeting, and financial planning.
+- [Heimdall](https://heimdall.srikanthk.tech) 🗡️: A dashboard for managing all your web applications in one place.
+- [SonarQube](https://sonar.srikanthk.tech) 🔍: Static code analysis for your projects
+
 
 ## Prerequisites 📋
 
