@@ -35,38 +35,39 @@ resource "kubernetes_deployment" "bookstack_deployment" {
         }
       }
       spec {
-        #        init_container {
-        #          name              = "init-master"
-        #          image             = "busybox"
-        #          image_pull_policy = "Always"
-        #
-        #          command = ["sh", "-c", "chmod 777 /volumes/*"]
-        #
-        #          volume_mount {
-        #            mount_path = "/volumes/${random_string.bookstack_volume.result}"
-        #            name       = random_string.bookstack_volume.result
-        #          }
-        #        }
-        #        init_container {
-        #          name              = "init-volume-master"
-        #          image             = "mysql:latest"
-        #          image_pull_policy = "IfNotPresent"
-        #
-        #          command = ["sh", "-c", "echo initializing volume... && (cp -Rv /var/www/bookstack/. /init-volume-0 || true)"]
-        #
-        #          volume_mount {
-        #            mount_path = "/init-volume-0"
-        #            name       = random_string.bookstack_volume.result
-        #            sub_path   = random_string.bookstack_volume.result
-        #          }
-        #        }
+        init_container {
+          name              = "init-master"
+          image             = "busybox"
+          image_pull_policy = "Always"
+
+          command = ["sh", "-c", "chmod 777 /volumes/*"]
+
+          volume_mount {
+            mount_path = "/volumes/${random_string.bookstack_volume.result}"
+            name       = random_string.bookstack_volume.result
+          }
+        }
+        init_container {
+          name              = "init-volume-master"
+          image             = "solidnerd/bookstack"
+          image_pull_policy = "IfNotPresent"
+
+          command = ["sh", "-c", "echo initializing volume... && (cp -Rv /var/www/bookstack/. /init-volume-0 || true)"]
+
+          volume_mount {
+            mount_path = "/init-volume-0"
+            name       = random_string.bookstack_volume.result
+            sub_path   = random_string.bookstack_volume.result
+          }
+        }
         container {
           image = "solidnerd/bookstack"
           name  = "bookstack"
-          #          volume_mount {
-          #            name       = random_string.bookstack_volume.result
-          #            mount_path = "/var/www/bookstack"
-          #          }
+          volume_mount {
+            name       = random_string.bookstack_volume.result
+            mount_path = "/var/www/bookstack"
+            sub_path   = random_string.bookstack_volume.result
+          }
           resources {
             limits = {
               cpu    = "1"
@@ -98,12 +99,12 @@ resource "kubernetes_deployment" "bookstack_deployment" {
             value = "https://bookstack.srikanthk.tech"
           }
         }
-        #        volume {
-        #          name = random_string.bookstack_volume.result
-        #          persistent_volume_claim {
-        #            claim_name = random_string.bookstack_volume.result
-        #          }
-        #        }
+        volume {
+          name = random_string.bookstack_volume.result
+          persistent_volume_claim {
+            claim_name = random_string.bookstack_volume.result
+          }
+        }
       }
     }
   }
@@ -178,10 +179,10 @@ resource "kubernetes_deployment" "mysql_deployment" {
 }
 
 resource "kubernetes_service" "bookstack_service" {
-    metadata {
-        name = "bookstack-service"
-        namespace = "productivity-stack-srikanth-iyengar"
-    }
+  metadata {
+    name      = "bookstack-service"
+    namespace = "productivity-stack-srikanth-iyengar"
+  }
 
   spec {
     selector = {
@@ -231,19 +232,19 @@ resource "kubernetes_persistent_volume_claim" "bookstack_pvc" {
   }
 }
 
-#resource "kubernetes_persistent_volume_claim" "bookstack_storage_pvc" {
-#  metadata {
-#    name      = random_string.bookstack_volume.result
-#    namespace = "productivity-stack-srikanth-iyengar"
-#  }
-#
-#  spec {
-#    access_modes = ["ReadWriteOnce"]
-#    storage_class_name = "okteto-standard"
-#    resources {
-#      requests = {
-#        storage = "1512Mi"
-#      }
-#    }
-#  }
-#}
+resource "kubernetes_persistent_volume_claim" "bookstack_storage_pvc" {
+  metadata {
+    name      = random_string.bookstack_volume.result
+    namespace = "productivity-stack-srikanth-iyengar"
+  }
+
+  spec {
+    access_modes       = ["ReadWriteOnce"]
+    storage_class_name = "okteto-standard"
+    resources {
+      requests = {
+        storage = "1512Mi"
+      }
+    }
+  }
+}
