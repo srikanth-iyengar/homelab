@@ -14,12 +14,23 @@ terraform {
   required_version = ">= 0.13"
 }
 
+terraform {
+  backend "http" {
+    address        = "https://api.tfstate.dev/github/v1"
+    lock_address   = "https://api.tfstate.dev/github/v1/lock"
+    unlock_address = "https://api.tfstate.dev/github/v1/lock"
+    lock_method    = "PUT"
+    unlock_method  = "DELETE"
+    username       = "srikanth-iyengar/infra"
+  }
+}
+
 provider "cloudflare" {
   api_token = var.cloudflare_token
 }
 
 provider "kubernetes" {
-  config_path = "/home/srikanth/.kube/config"
+  config_path = "~/.kube/config"
 }
 
 provider "random" {

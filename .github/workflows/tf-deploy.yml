@@ -1,0 +1,30 @@
+name: terraform_deploy
+
+on:
+  schedule:
+    - cron: '0 */4 * * *'
+  push:
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: hashicorp/setup-terraform@v2
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Install kubectl
+        run: curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl" && cp kubectl /usr/local/bin
+
+      - name: Install okteto cli
+        env: 
+          OKTETO_TOKEN: ${{ secrets.OKTETO_TOKEN }}
+        run: curl https://get.okteto.com -sSfL | sh && okteto login --token "$OKTETO_TOKEN" && okteto kubeconfig
+
+      - name: Terraform plan and apply
+        env:
+          TF_HTTP_PASSWORD: ${{ secrets.GIT_ACCESS_TOKEN }}
+        run: terraform apply -auto-approve -no-color
