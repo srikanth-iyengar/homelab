@@ -30,7 +30,6 @@ jobs:
           HCP_CLIENT_ID: ${{ secrets.HCP_CLIENT_ID }}
           HCP_CLIENT_SECRET: ${{ secrets.HCP_CLIENT_SECRET }}
         run: ./generate-env.sh && terraform fmt
-
       - name: Terraform plan and apply
         env:
           TF_HTTP_PASSWORD: ${{ secrets.GIT_ACCESS_TOKEN }}
