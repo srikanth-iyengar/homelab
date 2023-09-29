@@ -1,8 +1,7 @@
 #!/bin/bash
-#
-[ -f .env.ci ] && rm .env.ci
 
 source .env
+[ -f ci.tfvars ] && ci.tfvars
 
 HCP_API_TOKEN=`./get-api-token.sh`
 
@@ -15,7 +14,7 @@ for secret in $secrets; do
     value=$(curl -s \
     --location "https://api.cloud.hashicorp.com/secrets/2023-06-13/organizations/$HCP_ORG_ID/projects/$HCP_PROJ_ID/apps/$APP_NAME/open/$secret" \
     --request GET \
-    --header "Authorization: Bearer $HCP_API_TOKEN" | jq -r '.secret .version .value')
-    echo $secret=$value >> .env.ci
+    --header "Authorization: Bearer $HCP_API_TOKEN" | jq '.secret .version .value')
+    echo $secret=$value >> ci.tfvars
 done
 

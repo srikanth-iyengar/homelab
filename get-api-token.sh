@@ -1,6 +1,5 @@
 #!/bin/bash
 
-source .env
 HCP_API_TOKEN=$(curl -s --location 'https://auth.hashicorp.com/oauth/token' \
      --header 'content-type: application/json' \
      --data '{
