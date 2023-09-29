@@ -27,4 +27,4 @@ jobs:
       - name: Terraform plan and apply
         env:
           TF_HTTP_PASSWORD: ${{ secrets.GIT_ACCESS_TOKEN }}
-        run: terraform apply -auto-approve -no-color
+        run: terraform init && terraform apply -auto-approve -no-color
