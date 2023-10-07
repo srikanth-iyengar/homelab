@@ -1,4 +1,4 @@
 resource "helm_release" "litmus-chaos" {
-    name = "litmus chart deployment"
+    name = "litmuschart"
     chart = "./charts/litmus"
 }
