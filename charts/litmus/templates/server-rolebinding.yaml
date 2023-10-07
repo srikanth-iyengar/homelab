@@ -1,0 +1,162 @@
+---
+# Source: litmuschaos/charts/litmus/templates/server-rolebinding.yaml
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: argo-rb-for-litmuschaos-server
+  namespace: {{ .Values.namespace }}
+  labels:
+    app.kubernetes.io/component: argo-rb-for-litmus-server
+    app.kubernetes.io/instance: litmuschaos
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: litmus
+    app.kubernetes.io/part-of: litmus
+    app.kubernetes.io/version: "2.11.1"
+    helm.sh/chart: litmus-2.11.1
+    litmuschaos.io/version: 2.11.0
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: argo-role-for-litmuschaos-server
+subjects:
+  - kind: ServiceAccount
+    name: litmus-server-account
+    namespace: {{ .Values.namespace }}
+#these permissions are required to apply https://github.com/litmuschaos/litmus/blob/master/litmus-portal/graphql-server/manifests/namespace/2a_litmus_rbac.yaml
+---
+# Source: litmuschaos/charts/litmus/templates/server-rolebinding.yaml
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: litmus-namespace-scope-rb-for-litmuschaos-server
+  namespace: {{ .Values.namespace }}
+  labels:
+    app.kubernetes.io/name: litmus
+    # provide unique instance-id if applicable
+    # app.kubernetes.io/instance: litmus-abcxzy
+    app.kubernetes.io/version: v1.13.6
+    app.kubernetes.io/component: operator-rolebinding
+    app.kubernetes.io/part-of: litmus
+    app.kubernetes.io/managed-by: kubectl
+    name: litmus-namespace-scope-rb-for-litmus-server
+    app.kubernetes.io/instance: litmuschaos
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: litmus
+    app.kubernetes.io/part-of: litmus
+    app.kubernetes.io/version: "2.11.1"
+    helm.sh/chart: litmus-2.11.1
+    litmuschaos.io/version: 2.11.0
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: litmus-namespace-scope-for-litmuschaos-server
+subjects:
+  - kind: ServiceAccount
+    name: litmus-server-account
+    namespace: {{ .Values.namespace }}
+#these permissions are required to apply https://github.com/litmuschaos/litmus/blob/master/litmus-portal/graphql-server/manifests/namespace/3a_agents_rbac.yaml
+---
+# Source: litmuschaos/charts/litmus/templates/server-rolebinding.yaml
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: subscriber-rb-for-litmuschaos-server
+  namespace: {{ .Values.namespace }}
+  labels:
+    app.kubernetes.io/component: subscriber-rb-for-litmus-server
+    app.kubernetes.io/instance: litmuschaos
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: litmus
+    app.kubernetes.io/part-of: litmus
+    app.kubernetes.io/version: "2.11.1"
+    helm.sh/chart: litmus-2.11.1
+    litmuschaos.io/version: 2.11.0
+subjects:
+  - kind: ServiceAccount
+    name: litmus-server-account
+    namespace: {{ .Values.namespace }}
+roleRef:
+  kind: Role
+  name: subscriber-role-for-litmuschaos-server
+  apiGroup: rbac.authorization.k8s.io
+---
+# Source: litmuschaos/charts/litmus/templates/server-rolebinding.yaml
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: litmus-admin-rb-for-litmuschaos-server
+  namespace: {{ .Values.namespace }}
+  labels:
+    name: litmus-admin-rb-for-litmus-server
+    app.kubernetes.io/component: litmus-admin-rb-for-litmus-server
+    app.kubernetes.io/instance: litmuschaos
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: litmus
+    app.kubernetes.io/part-of: litmus
+    app.kubernetes.io/version: "2.11.1"
+    helm.sh/chart: litmus-2.11.1
+    litmuschaos.io/version: 2.11.0
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: litmus-admin-role-for-litmuschaos-server
+subjects:
+  - kind: ServiceAccount
+    name: litmus-server-account
+    namespace: {{ .Values.namespace }}
+---
+# Source: litmuschaos/charts/litmus/templates/server-rolebinding.yaml
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: chaos-rb-for-litmuschaos-server
+  namespace: {{ .Values.namespace }}
+  labels:
+    name: chaos-rb-for-litmus-server
+    app.kubernetes.io/component: chaos-rb-for-litmus-server
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: chaos-role-for-litmuschaos-server
+subjects:
+  - kind: ServiceAccount
+    name: litmus-server-account
+    namespace: {{ .Values.namespace }}
+---
+# Source: litmuschaos/charts/litmus/templates/server-rolebinding.yaml
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: event-tracker-rb-for-litmuschaos-server
+  namespace: {{ .Values.namespace }}
+  labels:
+    name: event-tracker-rb-for-litmus-server
+    app.kubernetes.io/component: event-tracker-rb-for-litmus-server
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: event-tracker-role-for-litmuschaos-server
+subjects:
+  - kind: ServiceAccount
+    name: litmus-server-account
+    namespace: {{ .Values.namespace }}
+# litmus-server-role is used by the litmusportal-server
+# If SELF_CLUSTER=false, then only litmus-server-role and litmus-server-rb are required.
+---
+# Source: litmuschaos/charts/litmus/templates/server-rolebinding.yaml
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: litmus-server-rb-for-litmuschaos-server
+  namespace: {{ .Values.namespace }}
+  labels:
+    name: litmus-server-rb-for-litmus-server
+    app.kubernetes.io/component: litmus-server-rb-for-litmus-server
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: litmus-server-role-for-litmuschaos-server
+subjects:
+  - kind: ServiceAccount
+    name: litmus-server-account
+    namespace: {{ .Values.namespace }}
