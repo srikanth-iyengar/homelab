@@ -56,6 +56,14 @@ resource "cloudflare_record" "firefly" {
   proxied = true
 }
 
+resource "cloudflare_record" "litmus" {
+    zone_id = var.cloudflare_zone_id
+    name = "litmus"
+    value = cloudflare_tunnel.auto_tunnel.cname
+    type = "CNAME"
+    proxied = true
+}
+
 resource "cloudflare_tunnel_config" "auto_tunnel" {
   tunnel_id  = cloudflare_tunnel.auto_tunnel.id
   account_id = var.cloudflare_account_id
@@ -83,6 +91,10 @@ resource "cloudflare_tunnel_config" "auto_tunnel" {
     ingress_rule {
       hostname = cloudflare_record.firefly.hostname
       service  = "http://firefly-service.productivity-stack-srikanth-iyengar.svc.cluster.local:8080"
+    }
+    ingress_rule {
+        hostname = cloudflare_record.litmus.hostname
+        service = "http://litmusportal-frontend-service.observability-suite-srikanth-iyengar.svc.cluster.local:9091"
     }
     ingress_rule {
       service = "http_status:404"
