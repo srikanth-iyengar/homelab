@@ -64,6 +64,14 @@ resource "cloudflare_record" "litmus" {
     proxied = true
 }
 
+resource "cloudflare_record" "litmus_server" {
+    zone_id = var.cloudflare_zone_id
+    name = "litmus.server"
+    value = cloudflare_tunnel.auto_tunnel.cname
+    type = "CNAME"
+    proxied = true
+}
+
 resource "cloudflare_tunnel_config" "auto_tunnel" {
   tunnel_id  = cloudflare_tunnel.auto_tunnel.id
   account_id = var.cloudflare_account_id
@@ -95,6 +103,10 @@ resource "cloudflare_tunnel_config" "auto_tunnel" {
     ingress_rule {
         hostname = cloudflare_record.litmus.hostname
         service = "http://chaos-litmus-frontend-service.observability-suite-srikanth-iyengar.svc.cluster.local:9091"
+    }
+    ingress_rule {
+        hostname = cloudflare_record.litmus_server.hostname
+        service = "http://chaos-litmus-server-service.observability-suite-srikanth-iyengar.svc.cluster.local:9002"
     }
     ingress_rule {
       service = "http_status:404"
