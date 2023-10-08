@@ -1,0 +1,23 @@
+---
+# Source: litmus/templates/server-cluster-role-binding.yaml
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: litmus-server-crb-for-chaos-litmus-server
+  labels:
+    app.kubernetes.io/component: litmus-server-crb-for-litmus-server
+    app.kubernetes.io/instance: chaos
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: litmus
+    app.kubernetes.io/part-of: litmus
+    app.kubernetes.io/version: "3.0.0"
+    helm.sh/chart: litmus-3.0.0
+    litmuschaos.io/version: 3.0.0
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: litmus-server-cr-for-chaos-litmus-server
+subjects:
+  - kind: ServiceAccount
+    name: litmus-server-account
+    namespace: {{ .Values.namespace }}

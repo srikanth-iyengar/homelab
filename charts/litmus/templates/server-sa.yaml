@@ -1,0 +1,16 @@
+---
+# Source: litmus/templates/server-sa.yaml
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: litmus-server-account
+  namespace: {{ .Values.namespace }}
+  labels:
+    app.kubernetes.io/component: litmus-server
+    app.kubernetes.io/instance: chaos
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: litmus
+    app.kubernetes.io/part-of: litmus
+    app.kubernetes.io/version: "3.0.0"
+    helm.sh/chart: litmus-3.0.0
+    litmuschaos.io/version: 3.0.0

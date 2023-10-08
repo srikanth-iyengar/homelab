@@ -1,0 +1,77 @@
+---
+# Source: litmus/templates/frontend-deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: chaos-litmus-frontend
+  namespace: {{ .Values.namespace }}
+  labels:
+    app.kubernetes.io/component: litmus-frontend
+    app.kubernetes.io/instance: chaos
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: litmus
+    app.kubernetes.io/part-of: litmus
+    app.kubernetes.io/version: "3.0.0"
+    helm.sh/chart: litmus-3.0.0
+    litmuschaos.io/version: 3.0.0
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/component: litmus-frontend
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/component: litmus-frontend
+        app.kubernetes.io/instance: chaos
+        app.kubernetes.io/managed-by: Helm
+        app.kubernetes.io/name: litmus
+        app.kubernetes.io/part-of: litmus
+        app.kubernetes.io/version: "3.0.0"
+        helm.sh/chart: litmus-3.0.0
+        litmuschaos.io/version: 3.0.0
+    spec:
+      automountServiceAccountToken: false
+      volumes:
+        - name: nginx-config
+          configMap:
+            name: chaos-litmus-frontend-nginx-configuration
+      containers:
+        - name: litmusportal-frontend
+          image: litmuschaos/litmusportal-frontend:3.0.0
+          imagePullPolicy: Always
+          resources:
+            limits:
+              cpu: 550m
+              ephemeral-storage: 1Gi
+              memory: 512Mi
+            requests:
+              cpu: 125m
+              ephemeral-storage: 500Mi
+              memory: 150Mi
+          securityContext:
+            null
+          livenessProbe:
+            httpGet:
+              path: /
+              port: http
+            failureThreshold: 5
+            initialDelaySeconds: 30
+            periodSeconds: 10
+            successThreshold: 1
+            timeoutSeconds: 5
+          readinessProbe:
+            httpGet:
+              path: /
+              port: http
+            initialDelaySeconds: 5
+            periodSeconds: 10
+            successThreshold: 1
+            timeoutSeconds: 1
+          ports:
+            - containerPort: 8185
+              name: http
+          volumeMounts:
+            - name: nginx-config
+              mountPath: /etc/nginx/nginx.conf
+              subPath: nginx.conf
