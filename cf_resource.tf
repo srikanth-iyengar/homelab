@@ -66,7 +66,7 @@ resource "cloudflare_record" "litmus" {
 
 resource "cloudflare_record" "litmus_server" {
     zone_id = var.cloudflare_zone_id
-    name = "litmus.server"
+    name = "litmus-server"
     value = cloudflare_tunnel.auto_tunnel.cname
     type = "CNAME"
     proxied = true
