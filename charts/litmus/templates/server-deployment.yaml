@@ -1,0 +1,177 @@
+---
+# Source: litmus/templates/server-deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: chaos-litmus-server
+  namespace: {{ .Values.namespace }}
+  labels:
+    app.kubernetes.io/component: litmus-server
+    app.kubernetes.io/instance: chaos
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: litmus
+    app.kubernetes.io/part-of: litmus
+    app.kubernetes.io/version: "3.0.0"
+    helm.sh/chart: litmus-3.0.0
+    litmuschaos.io/version: 3.0.0
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/component: litmus-server
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/component: litmus-server
+        app.kubernetes.io/instance: chaos
+        app.kubernetes.io/managed-by: Helm
+        app.kubernetes.io/name: litmus
+        app.kubernetes.io/part-of: litmus
+        app.kubernetes.io/version: "3.0.0"
+        helm.sh/chart: litmus-3.0.0
+        litmuschaos.io/version: 3.0.0
+    spec:
+      serviceAccountName: litmus-server-account
+      volumes:
+        - emptyDir: {}
+          name: gitops-storage
+        - emptyDir: {}
+          name: hub-storage
+      initContainers:
+        - name: wait-for-mongodb
+          image: litmuschaos/mongo:6
+          imagePullPolicy: Always
+          command: ["/bin/bash", "-c"]
+          env:
+            - name: DB_PASSWORD
+              value: "1234"
+            - name: DB_USER
+              value: root
+            - name: DB_SERVER
+              valueFrom:
+                configMapKeyRef:
+                  name: chaos-litmus-admin-config
+                  key: DB_SERVER
+          args:
+            [
+                "until [[ $(mongosh -u ${DB_USER} -p ${DB_PASSWORD} ${DB_SERVER} --eval 'rs.status()' | grep 'ok' | wc -l) -eq 1 ]]; do sleep 5; echo 'Waiting for the MongoDB to be ready...'; done; echo 'Connection with MongoDB established'",
+            ]
+          resources:
+            limits:
+              cpu: 250m
+              ephemeral-storage: 1Gi
+              memory: 512Mi
+            requests:
+              cpu: 25m
+              ephemeral-storage: 500Mi
+              memory: 150Mi
+          securityContext:
+            {}
+      containers:
+        - name: graphql-server
+          image: litmuschaos/litmusportal-server:3.0.0
+          volumeMounts:
+            - mountPath: /tmp/
+              name: gitops-storage
+            - mountPath: /tmp/version
+              name: hub-storage
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8080
+              name: gql-server
+            - containerPort: 8000
+              name: gql-rpc-server
+          resources:
+            limits:
+              cpu: 550m
+              ephemeral-storage: 1Gi
+              memory: 712Mi
+            requests:
+              cpu: 225m
+              ephemeral-storage: 500Mi
+              memory: 250Mi
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            runAsNonRoot: true
+            runAsUser: 2000
+          livenessProbe:
+            httpGet:
+              path: /
+              port: gql-server
+            failureThreshold: 5
+            initialDelaySeconds: 30
+            periodSeconds: 10
+            successThreshold: 1
+            timeoutSeconds: 5
+          readinessProbe:
+            httpGet:
+              path: /
+              port: gql-server
+            initialDelaySeconds: 5
+            periodSeconds: 10
+            successThreshold: 1
+            timeoutSeconds: 1
+          envFrom:
+            - secretRef:
+                name: chaos-litmus-admin-secret
+    
+            - configMapRef:
+                name: chaos-litmus-admin-config
+          env:
+            - name: DB_PASSWORD
+              value: "1234"
+            - name: DB_USER
+              value: root
+            - name: LITMUS_PORTAL_NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
+            - name: CHAOS_CENTER_SCOPE
+              value: cluster
+            - name: SERVER_SERVICE_NAME
+              value: chaos-litmus-server-service
+            - name: INGRESS
+              value: "false"
+            - name: INGRESS_NAME
+              value: "litmus-ingress"
+            - name: "LITMUS_AUTH_GRPC_ENDPOINT"
+              value: "chaos-litmus-auth-server-service"
+            - name: NODE_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: spec.nodeName
+            - name: ARGO_WORKFLOW_CONTROLLER_IMAGE
+              value: litmuschaos/workflow-controller:v3.3.1
+            - name: ARGO_WORKFLOW_EXECUTOR_IMAGE
+              value: litmuschaos/argoexec:v3.3.1
+            - name: EVENT_TRACKER_IMAGE
+              value: litmuschaos/litmusportal-event-tracker:3.0.0
+            - name: LITMUS_CHAOS_EXPORTER_IMAGE
+              value: litmuschaos/chaos-exporter:3.0.0
+            - name: LITMUS_CHAOS_OPERATOR_IMAGE
+              value: litmuschaos/chaos-operator:3.0.0
+            - name: LITMUS_CHAOS_RUNNER_IMAGE
+              value: litmuschaos/chaos-runner:3.0.0
+            - name: SUBSCRIBER_IMAGE
+              value: litmuschaos/litmusportal-subscriber:3.0.0
+            - name: CHAOS_CENTER_UI_ENDPOINT
+              value: ""
+            - name: CONTAINER_RUNTIME_EXECUTOR
+              value: "k8sapi"
+            - name: DEFAULT_HUB_BRANCH_NAME
+              value: "v3.0.x"
+            - name: INFRA_COMPATIBLE_VERSIONS
+              value: "[\"3.0.0\"]"
+            - name: INFRA_DEPLOYMENTS
+              value: "[\"app=chaos-exporter\", \"name=chaos-operator\", \"app=event-tracker\", \"app=workflow-controller\"]"
+            - name: LITMUS_AUTH_GRPC_PORT
+              value: ":3030"
+            - name: REMOTE_HUB_MAX_SIZE
+              value: "5000000"
+            - name: TLS_CERT_64
+              value: ""
+            - name: TLS_SECRET_NAME
+              value: ""
+            - name: WORKFLOW_HELPER_IMAGE_VERSION
+              value: "3.0.0"

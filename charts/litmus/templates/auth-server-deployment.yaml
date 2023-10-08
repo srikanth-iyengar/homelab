@@ -1,0 +1,103 @@
+---
+# Source: litmus/templates/auth-server-deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: chaos-litmus-auth-server
+  namespace: {{ .Values.namespace }}
+  labels:
+    app.kubernetes.io/component: litmus-auth-server
+    app.kubernetes.io/instance: chaos
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: litmus
+    app.kubernetes.io/part-of: litmus
+    app.kubernetes.io/version: "3.0.0"
+    helm.sh/chart: litmus-3.0.0
+    litmuschaos.io/version: 3.0.0
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/component: litmus-auth-server
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/component: litmus-auth-server
+        app.kubernetes.io/instance: chaos
+        app.kubernetes.io/managed-by: Helm
+        app.kubernetes.io/name: litmus
+        app.kubernetes.io/part-of: litmus
+        app.kubernetes.io/version: "3.0.0"
+        helm.sh/chart: litmus-3.0.0
+        litmuschaos.io/version: 3.0.0
+    spec:
+      automountServiceAccountToken: false
+      serviceAccountName: litmus-server-account
+      initContainers:
+        - name: wait-for-mongodb
+          image: litmuschaos/mongo:6
+          imagePullPolicy: Always
+          command: ["/bin/bash", "-c"]
+          env:
+            - name: DB_PASSWORD
+              value: "1234"
+            - name: DB_USER
+              value: root
+            - name: DB_SERVER
+              valueFrom:
+                configMapKeyRef:
+                  name: chaos-litmus-admin-config
+                  key: DB_SERVER
+          args:
+            [
+                "until  [[ $(mongosh -u ${DB_USER} -p ${DB_PASSWORD} ${DB_SERVER} --eval 'rs.status()' | grep 'ok' | wc -l) -eq 1 ]]; do sleep 5; echo 'Waiting for the MongoDB to be ready...'; done; echo 'Connection with MongoDB established'",
+            ]
+          resources:
+            limits:
+              cpu: 250m
+              ephemeral-storage: 1Gi
+              memory: 512Mi
+            requests:
+              cpu: 25m
+              ephemeral-storage: 500Mi
+              memory: 150Mi
+          securityContext:
+            {}
+      containers:
+        - name: auth-server
+          image: litmuschaos/litmusportal-auth-server:3.0.0
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 3030
+              name: auth-server
+            - containerPort: 3000
+              name: auth-rpc-server
+          resources:
+            limits:
+              cpu: 550m
+              ephemeral-storage: 1Gi
+              memory: 712Mi
+            requests:
+              cpu: 225m
+              ephemeral-storage: 500Mi
+              memory: 250Mi
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            runAsNonRoot: true
+            runAsUser: 2000
+          envFrom:
+            - secretRef:
+                name: chaos-litmus-admin-secret
+    
+            - configMapRef:
+                name: chaos-litmus-admin-config
+          env:
+            - name: DB_PASSWORD
+              value: "1234"
+            - name: DB_USER
+              value: root
+            - name: LITMUS_GQL_GRPC_ENDPOINT
+              value: "chaos-litmus-server-service"
+            - name: LITMUS_GQL_GRPC_PORT
+              value: ":8000"

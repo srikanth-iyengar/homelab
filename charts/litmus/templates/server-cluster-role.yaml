@@ -1,0 +1,43 @@
+---
+# Source: litmus/templates/server-cluster-role.yaml
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: litmus-server-cr-for-chaos-litmus-server
+  labels:
+    app.kubernetes.io/component: litmus-server-cr-for-litmus-server
+    app.kubernetes.io/instance: chaos
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: litmus
+    app.kubernetes.io/part-of: litmus
+    app.kubernetes.io/version: "3.0.0"
+    helm.sh/chart: litmus-3.0.0
+    litmuschaos.io/version: 3.0.0
+rules:
+  - apiGroups: [networking.k8s.io, extensions]
+    resources: [ingresses]
+    verbs: [get]
+
+  - apiGroups: [""]
+    resources: [pods/log]
+    verbs: [get, list, watch]
+
+  - apiGroups: [""]
+    resources: [pods, services]
+    verbs: [get, list, watch]
+
+  - apiGroups: [apps]
+    resources: [deployments]
+    verbs: [create]
+
+  - apiGroups: [""]
+    resources: [configmaps]
+    verbs: [get]
+
+  - apiGroups: [""]
+    resources: [serviceaccounts]
+    verbs: [create]
+
+  - apiGroups: [rbac.authorization.k8s.io]
+    resources: [rolebindings, roles]
+    verbs: [create]

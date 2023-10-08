@@ -1,0 +1,27 @@
+---
+# Source: litmus/templates/server-svc.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: chaos-litmus-server-service
+  namespace: {{ .Values.namespace }}
+  labels:
+    app.kubernetes.io/component: litmus-server
+    app.kubernetes.io/instance: chaos
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: litmus
+    app.kubernetes.io/part-of: litmus
+    app.kubernetes.io/version: "3.0.0"
+    helm.sh/chart: litmus-3.0.0
+    litmuschaos.io/version: 3.0.0
+spec:
+  type: ClusterIP
+  ports:
+    - name: graphql-server
+      port: 9002
+      targetPort: 8080
+    - name: graphql-rpc-server
+      port: 8000
+      targetPort: 8000
+  selector:
+    app.kubernetes.io/component: litmus-server
