@@ -94,7 +94,7 @@ resource "cloudflare_tunnel_config" "auto_tunnel" {
     }
     ingress_rule {
         hostname = cloudflare_record.litmus.hostname
-        service = "http://litmusportal-frontend-service.observability-suite-srikanth-iyengar.svc.cluster.local:9091"
+        service = "http://chaos-litmus-frontend-service.observability-suite-srikanth-iyengar.svc.cluster.local:9091"
     }
     ingress_rule {
       service = "http_status:404"
