@@ -11,6 +11,8 @@ This setup deploys:
 - [Keycloak](https://keycloak.srikanthk.tech) 🔐
 - [BookStack](https://bookstack.srikanthk.tech) 📚: A lightweight, self-hosted documentation platform for organizing and sharing information.
 - [Firefly III](https://firefly.srikanthk.tech) 💰: A personal finance manager for tracking expenses, budgeting, and financial planning.
+- [Litmus Chaos](https://litmus.srikanthk.tech) 🌀: A chaos engineering platform for Kubernetes. It helps you test the resilience of your applications by injecting chaos into your Kubernetes clusters. In this setup, we've deployed Litmus Chaos to enhance the reliability of our infrastructure.
+
 
 And soon to come:
 - [Kibana](https://kibana.srikanthk.tech) 📈
