@@ -11,7 +11,9 @@ metadata:
     app.kubernetes.io/instance: chaos
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/component: arbiter
+  annotations:
     updatedAt: {{ .Values.lastUpdated }}
+
 spec:
   serviceName: chaos-mongodb-arbiter-headless
   podManagementPolicy: OrderedReady
