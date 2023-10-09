@@ -57,19 +57,19 @@ resource "cloudflare_record" "firefly" {
 }
 
 resource "cloudflare_record" "litmus" {
-    zone_id = var.cloudflare_zone_id
-    name = "litmus"
-    value = cloudflare_tunnel.auto_tunnel.cname
-    type = "CNAME"
-    proxied = true
+  zone_id = var.cloudflare_zone_id
+  name    = "litmus"
+  value   = cloudflare_tunnel.auto_tunnel.cname
+  type    = "CNAME"
+  proxied = true
 }
 
 resource "cloudflare_record" "litmus_server" {
-    zone_id = var.cloudflare_zone_id
-    name = "litmus-server"
-    value = cloudflare_tunnel.auto_tunnel.cname
-    type = "CNAME"
-    proxied = true
+  zone_id = var.cloudflare_zone_id
+  name    = "litmus-server"
+  value   = cloudflare_tunnel.auto_tunnel.cname
+  type    = "CNAME"
+  proxied = true
 }
 
 resource "cloudflare_tunnel_config" "auto_tunnel" {
@@ -101,12 +101,12 @@ resource "cloudflare_tunnel_config" "auto_tunnel" {
       service  = "http://firefly-service.productivity-stack-srikanth-iyengar.svc.cluster.local:8080"
     }
     ingress_rule {
-        hostname = cloudflare_record.litmus.hostname
-        service = "http://chaos-litmus-frontend-service.observability-suite-srikanth-iyengar.svc.cluster.local:9091"
+      hostname = cloudflare_record.litmus.hostname
+      service  = "http://chaos-litmus-frontend-service.observability-suite-srikanth-iyengar.svc.cluster.local:9091"
     }
     ingress_rule {
-        hostname = cloudflare_record.litmus_server.hostname
-        service = "http://chaos-litmus-server-service.observability-suite-srikanth-iyengar.svc.cluster.local:9002"
+      hostname = cloudflare_record.litmus_server.hostname
+      service  = "http://chaos-litmus-server-service.observability-suite-srikanth-iyengar.svc.cluster.local:9002"
     }
     ingress_rule {
       service = "http_status:404"
