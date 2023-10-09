@@ -6,6 +6,6 @@ resource "helm_release" "litmus-chaos" {
   namespace = "observability-suite-srikanth-iyengar"
   values = [
     "namespace: observability-suite-srikanth-iyengar",
-    "lastUpdated: ab${time_static.litmus_updated.unix}"
+    "lastUpdated: ab${timestamp()}"
   ]
 }
