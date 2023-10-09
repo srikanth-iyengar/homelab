@@ -14,6 +14,10 @@ terraform {
       source  = "hashicorp/helm"
       version = "2.11.0"
     }
+    time = {
+      source  = "hashicorp/time"
+      version = "0.9.1"
+    }
 
   }
   required_version = ">= 0.13"
@@ -45,4 +49,7 @@ provider "helm" {
   kubernetes {
     config_path = "~/.kube/config"
   }
+} 
+
+provider "time" {
 }
