@@ -5,7 +5,7 @@ resource "helm_release" "litmus-chaos" {
   chart     = "./charts/litmus"
   namespace = "observability-suite-srikanth-iyengar"
   values = [
-    "namespace: observability-suite-srikanth-iyengar",
-    "lastUpdated: ab${timestamp()}"
+    "lastUpdated: ${timestamp()}",
+    "namespace:  observability-suite-srikanth-iyengar"
   ]
 }
