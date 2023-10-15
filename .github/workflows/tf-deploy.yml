@@ -2,7 +2,7 @@ name: terraform_deploy
 
 on:
   schedule:
-    - cron: '0 */4 * * *'
+    - cron: '0 */18 * * *'
   push:
     branches: [ "master" ]
 
