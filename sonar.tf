@@ -50,7 +50,7 @@ resource "kubernetes_stateful_set_v1" "sonarqube_deployment" {
           volume_mount {
             name       = "datadir"
             mount_path = "/opt/sonarqube/data"
-            sub_path = ""
+            sub_path   = ""
           }
         }
       }
