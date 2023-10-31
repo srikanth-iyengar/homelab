@@ -80,6 +80,14 @@ resource "cloudflare_record" "sonar" {
   proxied = true
 }
 
+resource "cloudflare_record" "prometheus" {
+  zone_id = var.cloudflare_zone_id
+  name    = "prometheus"
+  value   = cloudflare_tunnel.auto_tunnel.cname
+  type    = "CNAME"
+  proxied = true
+}
+
 resource "cloudflare_tunnel_config" "auto_tunnel" {
   tunnel_id  = cloudflare_tunnel.auto_tunnel.id
   account_id = var.cloudflare_account_id
@@ -119,6 +127,10 @@ resource "cloudflare_tunnel_config" "auto_tunnel" {
     ingress_rule {
       hostname = cloudflare_record.sonar.hostname
       service  = "http://sonar-service.dev-tools-srikanth-iyengar.svc.cluster.local:9000"
+    }
+    ingress_rule {
+      hostname = cloudflare_record.prometheus.hostname
+      service  = "http://prometheus-svc.essentials-srikanth-iyengar.svc.cluster.local:9090"
     }
     ingress_rule {
       service = "http_status:404"
