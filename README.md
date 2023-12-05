@@ -5,21 +5,21 @@ Welcome to my homelab setup, managed with Terraform for infrastructure and Kuber
 ## Overview 🌟
 
 This setup deploys:
-- [Jenkins](https://jenkins.srikanthk.tech) 🛠️
-- [Ntfy](https://ntfy.srikanthk.tech) 📢
-- [Grafana](https://grafana.srikanthk.tech) 📈
-- [Keycloak](https://keycloak.srikanthk.tech) 🔐
-- [BookStack](https://bookstack.srikanthk.tech) 📚: A lightweight, self-hosted documentation platform for organizing and sharing information.
-- [Firefly III](https://firefly.srikanthk.tech) 💰: A personal finance manager for tracking expenses, budgeting, and financial planning.
-- [Litmus Chaos](https://litmus.srikanthk.tech) 🌀: A chaos engineering platform for Kubernetes. It helps you test the resilience of your applications by injecting chaos into your Kubernetes clusters. In this setup, we've deployed Litmus Chaos to enhance the reliability of our infrastructure.
+- [Jenkins](https://jenkins.srikanthk.in) 🛠️
+- [Ntfy](https://ntfy.srikanthk.in) 📢
+- [Grafana](https://grafana.srikanthk.in) 📈
+- [Keycloak](https://keycloak.srikanthk.in) 🔐
+- [BookStack](https://bookstack.srikanthk.in) 📚: A lightweight, self-hosted documentation platform for organizing and sharing information.
+- [Firefly III](https://firefly.srikanthk.in) 💰: A personal finance manager for tracking expenses, budgeting, and financial planning.
+- [Litmus Chaos](https://litmus.srikanthk.in) 🌀: A chaos engineering platform for Kubernetes. It helps you test the resilience of your applications by injecting chaos into your Kubernetes clusters. In this setup, we've deployed Litmus Chaos to enhance the reliability of our infrastructure.
+- [SonarQube](https://sonar.srikanthk.in) 🔍: Static code analysis for your projects
 
 
 And soon to come:
-- [Kibana](https://kibana.srikanthk.tech) 📈
-- [Elasticsearch](https://elasticsearch.srikanthk.tech) 📊
-- [PgAdmin](https://pgadmin.srikanthk.tech) 🐘
-- [Heimdall](https://heimdall.srikanthk.tech) 🗡️: A dashboard for managing all your web applications in one place.
-- [SonarQube](https://sonar.srikanthk.tech) 🔍: Static code analysis for your projects
+- [Kibana](https://kibana.srikanthk.in) 📈
+- [Elasticsearch](https://elasticsearch.srikanthk.in) 📊
+- [PgAdmin](https://pgadmin.srikanthk.in) 🐘
+- [Heimdall](https://heimdall.srikanthk.in) 🗡️: A dashboard for managing all your web applications in one place.
 
 
 ## Prerequisites 📋
