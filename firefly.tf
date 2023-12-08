@@ -64,7 +64,7 @@ resource "kubernetes_deployment" "firefly_iii_depl" {
           }
           env {
             name  = "APP_URL"
-            value = "https://firefly.srikanthk.tech"
+            value = "https://firefly.srikanthk.in"
           }
           env {
             name  = "TRUSTED_PROXIES"
