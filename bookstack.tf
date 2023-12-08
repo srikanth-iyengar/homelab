@@ -92,11 +92,11 @@ resource "kubernetes_deployment" "bookstack_deployment" {
           }
           env {
             name  = "APP_URL"
-            value = "https://bookstack.srikanthk.tech"
+            value = "https://bookstack.srikanthk.in"
           }
           env {
             name  = "APP_KEY"
-            value = "https://bookstack.srikanthk.tech"
+            value = "https://bookstack.srikanthk.in"
           }
         }
         volume {
