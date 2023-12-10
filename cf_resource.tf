@@ -88,6 +88,14 @@ resource "cloudflare_record" "prometheus" {
   proxied = true
 }
 
+resource "cloudflare_record" "codimd" {
+  zone_id = var.cloudflare_zone_id
+  name    = "codimd"
+  value   = cloudflare_tunnel.auto_tunnel.cname
+  type    = "CNAME"
+  proxied = true
+}
+
 resource "cloudflare_tunnel_config" "auto_tunnel" {
   tunnel_id  = cloudflare_tunnel.auto_tunnel.id
   account_id = var.cloudflare_account_id
@@ -131,6 +139,10 @@ resource "cloudflare_tunnel_config" "auto_tunnel" {
     ingress_rule {
       hostname = cloudflare_record.prometheus.hostname
       service  = "http://prometheus-svc.essentials-srikanth-iyengar.svc.cluster.local:9090"
+    }
+    ingress_rule {
+      hostname = cloudflare_record.codimd.hostname
+      service  = "http://codimd-svc.productivity-stack-srikanth-iyengar.svc.cluster.local:3000"
     }
     ingress_rule {
       service = "http_status:404"
