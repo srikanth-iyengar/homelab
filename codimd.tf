@@ -86,10 +86,13 @@ resource "kubernetes_stateful_set" "codimd_sts" {
             run_as_user                = 1001
             allow_privilege_escalation = false
           }
+          volume_mount {
+            name       = "datadir"
+            mount_path = "/home/hackmd/app/public/uploads"
+          }
           env {
             name  = "CMD_DB_URL"
             value = "mysql://root:${random_string.mysql_password.result}@mysql-service.productivity-stack-srikanth-iyengar.svc.cluster.local:3306/codimd"
-            # value = random_string.mysql_password.result
           }
         }
       }

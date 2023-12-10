@@ -1,7 +1,7 @@
 resource "random_string" "mysql_password" {
-  length = 35
+  length  = 35
   special = false
-  upper = false
+  upper   = false
   numeric = false
 }
 
